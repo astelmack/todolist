@@ -64,7 +64,7 @@ export function TodoList() {
             </MaterialIcons.Button>
           </View>
           <FlashList
-            data={todoList}
+            data={showCompleted ? todoList : todoList.filter((item) => !item.complete)}
             renderItem={({ item }) => (
               <TodoListItem
                 {...item}
