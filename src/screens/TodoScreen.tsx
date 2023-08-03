@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { SafeAreaView, StatusBar, Text, useColorScheme, View } from 'react-native';
+import { SafeAreaView, StatusBar, Text, View } from 'react-native';
 
 import { TodoList } from '../features/TodoList';
 import { useAuthentication } from '../hooks/useAuthentication';

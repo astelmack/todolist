@@ -104,7 +104,7 @@ export function TodoListProvider({ children }: { children: ReactNode }) {
       removeItem,
       updateItem,
     }),
-    [addItem, removeItem, state]
+    [addItem, removeItem, state, updateItem]
   );
   return <TodoListContext.Provider value={value}>{children}</TodoListContext.Provider>;
 }
