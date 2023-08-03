@@ -41,9 +41,14 @@ export function TodoItemForm({ todoItem, onSubmit }: TodoItemFormProps) {
         onChangeText={setTitle}
         value={title}
       />
-      <Pressable style={styles.button} disabled={disabled} onPress={pressHandler}>
-        <MaterialIcons name="save" size={24} color="white" />
-        <Text selectable={false} style={styles.buttonLabel}>
+      <Pressable
+        style={[styles.button, disabled ? styles.buttonDisabled : undefined]}
+        disabled={disabled}
+        onPress={pressHandler}>
+        <MaterialIcons name="save" size={24} color={disabled ? '#363634' : 'white'} />
+        <Text
+          selectable={false}
+          style={[styles.buttonLabel, disabled ? styles.buttonLabelDisabled : undefined]}>
           {todoItem ? 'Save Changes' : 'Save Item'}
         </Text>
       </Pressable>

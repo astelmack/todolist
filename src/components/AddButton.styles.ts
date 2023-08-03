@@ -13,10 +13,16 @@ export const styles = StyleSheet.create<StylesType>({
     width: 'auto',
     alignSelf: 'flex-start',
   },
+  buttonDisabled: {
+    backgroundColor: '#BEBEBE',
+  },
   label: {
     marginLeft: 8,
     fontSize: 16,
     fontWeight: '700',
     color: 'white',
+  },
+  labelDisabled: {
+    color: '#363634',
   },
 });

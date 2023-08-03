@@ -6,7 +6,9 @@ export type StylesType = {
   label: TextStyle;
   input: TextStyle;
   button: ViewStyle;
+  buttonDisabled: ViewStyle;
   buttonLabel: TextStyle;
+  buttonLabelDisabled: TextStyle;
 };
 
 export type TodoItemFormProps = {

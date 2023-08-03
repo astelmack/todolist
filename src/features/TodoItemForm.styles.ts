@@ -23,10 +23,16 @@ export const styles = StyleSheet.create<StylesType>({
     borderRadius: 6,
     backgroundColor: '#006D75',
   },
+  buttonDisabled: {
+    backgroundColor: '#BEBEBE',
+  },
   buttonLabel: {
     marginLeft: 8,
     fontSize: 16,
     fontWeight: '700',
     color: 'white',
+  },
+  buttonLabelDisabled: {
+    color: '#363634',
   },
 });

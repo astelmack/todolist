@@ -6,12 +6,16 @@ export const styles = StyleSheet.create<StylesType>({
   wrapper: {
     flex: 1,
   },
+  keyboardView: {
+    flex: 1,
+    position: 'relative',
+  },
   body: {
     position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    height: '50%',
+    height: '40%',
     backgroundColor: 'white',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
