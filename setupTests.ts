@@ -3,3 +3,9 @@ jest.mock('expo-local-authentication', () => ({
   isEnrolledAsync: jest.fn(() => Promise.resolve(true)),
   authenticateAsync: jest.fn(() => Promise.resolve({ success: true })),
 }));
+
+jest.mock('@react-native-async-storage/async-storage', () =>
+  require('@react-native-async-storage/async-storage/jest/async-storage-mock')
+);
+
+export {};

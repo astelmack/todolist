@@ -9,28 +9,30 @@ import type {
 import { useAuthentication } from '../hooks/useAuthentication';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 
-function itemsMatch(a: ToDoItem, b: ToDoItem) {
-  const titleMatches = a.title === b.title;
-  const descriptionMatches = a.description === b.description;
-  return titleMatches && descriptionMatches;
-}
-
 export function TodoListProvider({ children }: { children: ReactNode }) {
   const { isAuthenticated } = useAuthentication();
-  const { loadItems } = useLocalStorage();
+  const { loadItems, saveItems } = useLocalStorage();
   const [state, setState] = useState<TodoListState>({
     loading: false,
     todoList: [],
   });
 
+  // On render or on authentication state change, we will load the last state of the list from storage
   useEffect(() => {
     let isCancelled = false;
     if (isAuthenticated) {
       setState((currentState) => ({ ...currentState, loading: true }));
       (async () => {
-        const items = await loadItems();
-        if (!isCancelled) {
-          setState({ loading: false, todoList: items });
+        try {
+          const items = await loadItems();
+          if (!isCancelled) {
+            setState({ loading: false, todoList: items });
+          }
+        } catch (e) {
+          console.warn('Failed to load state of todo list from local storage', e);
+          if (!isCancelled) {
+            setState((currentState) => ({ ...currentState, loading: false }));
+          }
         }
       })();
     }
@@ -38,6 +40,30 @@ export function TodoListProvider({ children }: { children: ReactNode }) {
       isCancelled = true;
     };
   }, [isAuthenticated, loadItems]);
+
+  // Ensure that changes in the list are written to local storage
+  useEffect(() => {
+    if (isAuthenticated) {
+      (async () => {
+        try {
+          await saveItems(state.todoList);
+        } catch (e) {
+          console.warn('Failed to save state of todo list to local storage', e);
+        }
+      })();
+    }
+    return () => {
+      if (isAuthenticated) {
+        (async () => {
+          try {
+            await saveItems(state.todoList);
+          } catch (e) {
+            console.warn('Failed to save state of todo list to local storage', e);
+          }
+        })();
+      }
+    };
+  }, [isAuthenticated, saveItems, state.todoList]);
 
   const addItem = useCallback((item: ToDoItem) => {
     setState((currentState) => {
@@ -50,9 +76,22 @@ export function TodoListProvider({ children }: { children: ReactNode }) {
     setState((currentState) => {
       return {
         ...currentState,
-        todoList: [...currentState.todoList].filter(
-          (currentItem) => !itemsMatch(currentItem, item)
-        ),
+        todoList: [...currentState.todoList].filter((currentItem) => currentItem.id !== item.id),
+      };
+    });
+    return item;
+  }, []);
+
+  const updateItem = useCallback((item: ToDoItem) => {
+    setState((currentState) => {
+      return {
+        ...currentState,
+        todoList: currentState.todoList.map((currentItem) => {
+          if (currentItem.id === item.id) {
+            return item;
+          }
+          return currentItem;
+        }),
       };
     });
     return item;
@@ -63,6 +102,7 @@ export function TodoListProvider({ children }: { children: ReactNode }) {
       state,
       addItem,
       removeItem,
+      updateItem,
     }),
     [addItem, removeItem, state]
   );

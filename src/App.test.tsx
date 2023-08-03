@@ -1,24 +1,13 @@
-import 'react-native';
-import renderer from 'react-test-renderer';
+import { render, waitFor } from '@testing-library/react-native';
 
+import 'react-native';
 import App from './App';
 
 jest.mock('./providers/AuthenticationProvider');
 
 describe('<App />', () => {
-  it('renders correctly', () => {
-    renderer.act(() => {
-      renderer.create(<App />);
-    });
-  });
-
-  it('has 2 children', () => {
-    let root: any;
-
-    renderer.act(() => {
-      root = renderer.create(<App />);
-    });
-
-    expect(root?.toJSON()?.children?.length).toBe(2);
+  it('renders correctly', async () => {
+    const { getByText } = render(<App />);
+    await waitFor(() => expect(getByText('To Do List')).toBeTruthy());
   });
 });

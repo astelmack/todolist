@@ -1,6 +1,7 @@
 export type ToDoItem = {
+  id: string;
+  complete: boolean;
   title: string;
-  description?: string;
 };
 
 export type TodoListState = {
@@ -10,6 +11,7 @@ export type TodoListState = {
 
 export type TodoListContextType = {
   state: TodoListState;
-  addItem: (newItem: ToDoItem) => ToDoItem; // TODO: This should be a promise later
-  removeItem: (removeItem: ToDoItem) => ToDoItem; // TODO: This should be a promise later
+  addItem: (item: ToDoItem) => ToDoItem;
+  removeItem: (item: ToDoItem) => ToDoItem;
+  updateItem: (item: ToDoItem) => ToDoItem;
 };

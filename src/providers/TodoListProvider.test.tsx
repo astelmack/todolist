@@ -31,8 +31,6 @@ function customRender(
   );
 }
 
-// TODO: These tests still warn that there is an update happening without being wrapped in an act, even through render and helpers from testing library should already be pre-wrapped...
-
 test('when logged out, returns an empty list', async () => {
   const loadItemsMock = jest.fn();
   jest.spyOn(LocalStorageModule, 'useLocalStorage').mockImplementation(() => ({
@@ -70,8 +68,9 @@ test('when logged in, returns the current list', async () => {
   }));
   const listItems: ToDoItem[] = [
     {
+      id: '1',
+      complete: false,
       title: 'Mock Item',
-      description: 'This is a mock To Do List item',
     },
   ];
   loadItemsMock.mockReturnValue(Promise.resolve(listItems));
@@ -83,7 +82,7 @@ test('when logged in, returns the current list', async () => {
           <View>
             {loading ? <Text testID="loading">Loading...</Text> : undefined}
             {todoList.map((item) => (
-              <Text testID="list-item" key={item.title}>
+              <Text testID="list-item" key={item.id}>
                 {item.title}
               </Text>
             ))}
@@ -107,8 +106,9 @@ test('on addItem, item added to the list', async () => {
   }));
   const listItems: ToDoItem[] = [
     {
+      id: '1',
+      complete: false,
       title: 'Mock Item',
-      description: 'This is a mock To Do List item',
     },
   ];
   loadItemsMock.mockReturnValue(Promise.resolve(listItems));
@@ -127,7 +127,13 @@ test('on addItem, item added to the list', async () => {
               ))}
             </View>
             <Pressable
-              onPress={() => addItem({ title: 'New Item', description: 'New Description' })}
+              onPress={() =>
+                addItem({
+                  id: '2',
+                  complete: false,
+                  title: 'New Item',
+                })
+              }
               testID="add-button">
               Add Item
             </Pressable>
@@ -158,12 +164,14 @@ test('on removeItem, item removed from the list', async () => {
   }));
   const listItems: ToDoItem[] = [
     {
+      id: '1',
+      complete: false,
       title: 'First Item',
-      description: 'This is a mock To Do List item',
     },
     {
+      id: '2',
+      complete: false,
       title: 'Second Item',
-      description: 'This is a mock To Do List item',
     },
   ];
   loadItemsMock.mockReturnValue(Promise.resolve(listItems));
@@ -175,7 +183,7 @@ test('on removeItem, item removed from the list', async () => {
           <View>
             {loading ? <Text testID="loading">Loading...</Text> : undefined}
             {todoList.map((item) => (
-              <View key={item.title}>
+              <View key={item.id}>
                 <Text testID="list-item">{item.title}</Text>
                 <Pressable testID="remove-button" onPress={() => removeItem(item)}>
                   Remove
@@ -197,5 +205,54 @@ test('on removeItem, item removed from the list', async () => {
 
   await waitFor(() => expect(getAllByTestId('list-item').length).toBe(1));
   expect(getAllByTestId('list-item')[0].props.children).toEqual('Second Item');
+  expect(loadItemsMock).toBeCalledTimes(1);
+});
+
+test('on updateItem, item updated in the list', async () => {
+  const loadItemsMock = jest.fn();
+  jest.spyOn(LocalStorageModule, 'useLocalStorage').mockImplementation(() => ({
+    loadItems: loadItemsMock,
+    saveItems: jest.fn(),
+  }));
+  const listItems: ToDoItem[] = [
+    {
+      id: '1',
+      complete: false,
+      title: 'Mock Item',
+    },
+  ];
+  loadItemsMock.mockReturnValue(Promise.resolve(listItems));
+
+  const { queryByTestId, getAllByTestId, getByTestId } = customRender(
+    <TodoListContext.Consumer>
+      {({ state: { loading, todoList }, updateItem }) => {
+        return (
+          <View>
+            {loading ? <Text testID="loading">Loading...</Text> : undefined}
+            {todoList.map((item) => (
+              <View key={item.id}>
+                <Text testID="item-complete">{item.complete ? 'true' : 'false'}</Text>
+                <Pressable
+                  testID="toggle-button"
+                  onPress={() => updateItem({ ...item, complete: !item.complete })}>
+                  Toggle Complete
+                </Pressable>
+              </View>
+            ))}
+          </View>
+        );
+      }}
+    </TodoListContext.Consumer>,
+    {}
+  );
+
+  await waitFor(() => expect(queryByTestId('loading')).toBeNull());
+  expect(getAllByTestId('item-complete').length).toBe(1);
+  expect(getAllByTestId('item-complete')[0].props.children).toEqual('false');
+
+  fireEvent.press(getByTestId('toggle-button'));
+
+  await waitFor(() => expect(getAllByTestId('item-complete').length).toBe(1));
+  expect(getAllByTestId('item-complete')[0].props.children).toEqual('true');
   expect(loadItemsMock).toBeCalledTimes(1);
 });

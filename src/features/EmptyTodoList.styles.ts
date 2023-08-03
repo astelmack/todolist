@@ -6,6 +6,7 @@ export const styles = StyleSheet.create<StylesType>({
   container: {
     flex: 1,
     backgroundColor: 'black',
+    alignItems: 'center',
   },
   message: {
     fontSize: 16,

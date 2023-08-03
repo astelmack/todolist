@@ -5,7 +5,7 @@
  * @format
  */
 
-import { TodoApp } from './features/TodoApp';
+import { TodoScreen } from './screens/TodoScreen';
 import { AuthenticationProvider } from './providers/AuthenticationProvider';
 import { TodoListProvider } from './providers/TodoListProvider';
 
@@ -13,7 +13,7 @@ export default function App() {
   return (
     <AuthenticationProvider>
       <TodoListProvider>
-        <TodoApp />
+        <TodoScreen />
       </TodoListProvider>
     </AuthenticationProvider>
   );
