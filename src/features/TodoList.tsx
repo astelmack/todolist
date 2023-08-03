@@ -1,6 +1,7 @@
+import { MaterialIcons } from '@expo/vector-icons';
 import { FlashList } from '@shopify/flash-list';
 import { useState } from 'react';
-import { Text, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { AddButton } from '../components/AddButton';
 import { Divider } from '../components/Divider';
@@ -21,6 +22,7 @@ export function TodoList() {
     updateItem,
   } = useTodoList();
   const [modalState, setModalState] = useState<ModalState | undefined>();
+  const [showCompleted, setShowCompleted] = useState(true);
 
   return (
     <View style={styles.container}>
@@ -42,6 +44,24 @@ export function TodoList() {
               onPress={() => setModalState({ mode: 'add' })}>
               Add Item
             </AddButton>
+            <MaterialIcons.Button
+              name={showCompleted ? 'check-box' : 'check-box-outline-blank'}
+              backgroundColor="transparent"
+              iconStyle={StyleSheet.flatten(
+                StyleSheet.compose(
+                  styles.checkboxIcon,
+                  !auth.isAuthenticated || loading ? styles.checkboxDisabled : undefined
+                )
+              )}
+              onPress={() => setShowCompleted((current) => !current)}>
+              <Text
+                style={[
+                  styles.checkboxLabel,
+                  !auth.isAuthenticated || loading ? styles.checkboxDisabled : undefined,
+                ]}>
+                Show Completed
+              </Text>
+            </MaterialIcons.Button>
           </View>
           <FlashList
             data={todoList}

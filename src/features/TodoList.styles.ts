@@ -9,8 +9,20 @@ export const styles = StyleSheet.create<StylesType>({
   container: {
     flex: 1,
   },
+  checkboxIcon: {
+    color: '#006D75',
+  },
+  checkboxDisabled: {
+    color: '#363634',
+  },
+  checkboxLabel: {
+    color: 'white',
+    fontSize: 14,
+  },
   controls: {
     flexDirection: 'row-reverse',
+    justifyContent: 'space-between',
+    alignItems: 'flex-end',
     marginBottom: 32,
   },
   divider: {

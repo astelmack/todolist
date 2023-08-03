@@ -20,5 +20,6 @@ export const styles = StyleSheet.create<StylesType>({
     fontSize: 42,
     fontWeight: 'bold',
     color: 'white',
+    marginBottom: 32,
   },
 });

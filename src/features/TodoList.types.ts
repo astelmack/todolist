@@ -6,6 +6,9 @@ export type StylesType = {
   container: ViewStyle;
   controls: ViewStyle;
   divider: ViewStyle;
+  checkboxIcon: TextStyle;
+  checkboxLabel: TextStyle;
+  checkboxDisabled: TextStyle;
 };
 
 export type ModalState =
